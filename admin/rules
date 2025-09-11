@@ -1,0 +1,81 @@
+You are to build a secure, responsive, and robust University Online Voting System in PHP 8+ with MySQL, following the MVC structure, fully commented code, and strict adherence to security best practices. The system must support Admin and Voter roles with separate logins and access levels.
+
+System Objectives:
+
+Fully responsive for mobile, tablet, and desktop.
+
+Optimized for speed (page loads under 2 seconds).
+
+Transparent, tamper-proof, and scalable for thousands of concurrent users.
+
+Security Requirements:
+
+Force HTTPS on all pages.
+
+Implement CSRF protection on all forms.
+
+Use SQL prepared statements to prevent SQL injection.
+
+Passwords hashed using bcrypt or stronger.
+
+Limit login attempts to prevent brute force attacks.
+
+Secure session cookies (HttpOnly, Secure, and short expiry).
+
+Encrypt all votes in the database.
+
+Maintain voter anonymity — no direct link between vote and user.
+
+Separate admin and voter login pages.
+
+Functional Requirements:
+
+Admin features: Create/manage elections, add/manage candidates (name, position, photo stored as MEDIUMBLOB or file path), set election start/end date/time, monitor voting progress, publish results, view audit logs, export results (PDF/Excel).
+
+Voter features: Login, view elections, and access a dedicated voting page where each candidate’s details (name, position, and photo) are displayed per position. Include a “Cast Vote” button for each candidate. Ensure voters can cast exactly one vote per position with a confirmation popup before submission, and votes are instantly counted in the backend.
+
+Results: Show live tally (if enabled by admin), display in tables and charts using Chart.js, exportable.
+
+Audit Trail: Log all system actions for admin review.
+
+Non-Functional Requirements:
+
+Handle at least 5,000+ votes per minute.
+
+WCAG-compliant for accessibility.
+
+MVC architecture for maintainability.
+
+Auto-backup database every 10 minutes during the election period.
+
+No downtime during elections.
+
+Technology Stack:
+
+Backend: PHP 8+ (MVC).
+
+Database: MySQL.
+
+Frontend: Bootstrap 5 or Tailwind CSS.
+
+JavaScript with AJAX/Fetch for dynamic updates.
+
+Chart.js for results visualization.
+
+Deployment & Documentation:
+
+Deploy on a secure cloud host with SSL/TLS enabled.
+
+Provide installation and setup documentation.
+
+Include database migration scripts.
+
+Testing:
+
+Unit tests for login, vote submission, and result accuracy.
+
+Load test for 5,000 concurrent users.
+
+Penetration test to identify and fix vulnerabilities.
+
+Build the system exactly as described, following these rules with no deviations.

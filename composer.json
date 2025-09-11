@@ -1,0 +1,98 @@
+{
+    "name": "votesys/voting-system",
+    "description": "A comprehensive online voting system for educational institutions",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "VOTESYS Team",
+            "email": "admin@votesys.local"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "ext-curl": "*",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-mysqli": "*",
+        "ext-openssl": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-xml": "*",
+        "ext-zip": "*",
+        "monolog/monolog": "^3.4",
+        "phpmailer/phpmailer": "*",
+        "phpoffice/phpspreadsheet": "^1.29",
+        "vlucas/phpdotenv": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.3",
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpstan/phpstan": "^1.10",
+        "friendsofphp/php-cs-fixer": "^3.21"
+    },
+    "autoload": {
+        "psr-4": {
+            "Votesys\\": "src/",
+            "Votesys\\Admin\\": "admin/classes/",
+            "Votesys\\Voter\\": "voter/classes/",
+            "Votesys\\Core\\": "core/"
+        },
+        "files": [
+            "config/database.php",
+            "core/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Votesys\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage",
+        "cs-check": "phpcs --standard=PSR12 admin/ voter/ core/",
+        "cs-fix": "phpcbf --standard=PSR12 admin/ voter/ core/",
+        "stan": "phpstan analyse admin/ voter/ core/ --level=5",
+        "quality": [
+            "@cs-check",
+            "@stan",
+            "@test"
+        ],
+        "post-install-cmd": [
+            "@php -r \"if (!file_exists('config/database.php')) { echo 'Please configure your database settings in config/database.php'; }\""
+        ],
+        "post-update-cmd": [
+            "@php -r \"echo 'Dependencies updated successfully!';\""
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0-dev"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/votesys/voting-system/issues",
+        "source": "https://github.com/votesys/voting-system"
+    },
+    "keywords": [
+        "voting",
+        "election",
+        "democracy",
+        "php",
+        "mysql",
+        "web-application",
+        "student-council",
+        "online-voting"
+    ]
+}

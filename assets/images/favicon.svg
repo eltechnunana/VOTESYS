@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="url(#bg)"/>
+  
+  <!-- Voting Box -->
+  <rect x="8" y="12" width="16" height="12" rx="1" fill="url(#fg)"/>
+  <rect x="10" y="10" width="12" height="2" rx="1" fill="white"/>
+  
+  <!-- Ballot Slot -->
+  <rect x="14" y="11" width="4" height="1" fill="url(#bg)"/>
+  
+  <!-- Check Mark -->
+  <path d="M12 18 L14 20 L20 14" stroke="white" stroke-width="1.5" fill="none"/>
+</svg>

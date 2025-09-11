@@ -1,0 +1,42 @@
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Vendor directory
+vendor/
+
+# Node modules
+node_modules/
+
+# Uploads
+uploads/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Cache
+cache/
+*.cache
+
+# Build files
+build/
+dist/
+
+# Test files
+test_*.php
+
+# Backup files
+*.bak
+*.backup

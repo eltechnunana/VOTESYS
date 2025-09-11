@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # VOTESYS Web Application
+  web:
+    build: .
+    container_name: votesys_web
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./uploads:/var/www/html/uploads
+      - ./logs:/var/www/html/logs
+      - ./config:/var/www/html/config
+    environment:
+      - DB_HOST=db
+      - DB_NAME=votesys
+      - DB_USER=votesys_user
+      - DB_PASS=votesys_password
+      - DB_CHARSET=utf8mb4
+      - APP_ENV=production
+      - APP_DEBUG=false
+      # Email Configuration (Required for auto-generated passwords)
+      - MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
+      - MAIL_PORT=${MAIL_PORT:-587}
+      - MAIL_USERNAME=${MAIL_USERNAME:-}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-tls}
+      - MAIL_FROM_EMAIL=${MAIL_FROM_EMAIL:-noreply@yourdomain.com}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-VOTESYS - University Voting System}
+      
+      # Election Configuration
+      - CURRENT_ELECTION_ID=${CURRENT_ELECTION_ID:-1}
+      
+      # Security Configuration
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-HCU_VOTING_2024_SECURE_KEY_CHANGE_IN_PRODUCTION}
+      - DEVELOPMENT_MODE=${DEVELOPMENT_MODE:-false}
+      - VALIDATE_SESSION_IP=${VALIDATE_SESSION_IP:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - votesys_network
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: votesys_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: votesys
+      MYSQL_USER: votesys_user
+      MYSQL_PASSWORD: votesys_password
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3306"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - votesys_network
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: votesys_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: votesys_user
+      PMA_PASSWORD: votesys_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - votesys_network
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: votesys_redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - votesys_network
+    command: redis-server --appendonly yes
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  votesys_network:
+    driver: bridge

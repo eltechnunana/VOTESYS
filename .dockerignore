@@ -1,0 +1,103 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README*
+docs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Cache files
+cache/
+*.cache
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Node.js (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Composer
+vendor/
+composer.lock
+
+# Test files
+tests/
+test/
+*.test.php
+phpunit.xml
+
+# Build artifacts
+build/
+dist/
+
+# Docker files (avoid recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Uploads (will be mounted as volume)
+uploads/
+
+# Configuration files that should be generated
+config/database.php
+config/local.php
+
+# Development tools
+.phpcs.xml
+.phpunit.xml
+.editorconfig
+
+# Security sensitive files
+*.pem
+*.key
+*.crt
+*.p12
+
+# Database dumps
+*.sql
+*.dump
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z

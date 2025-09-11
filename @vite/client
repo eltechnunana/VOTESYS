@@ -1,0 +1,18 @@
+// Vite client placeholder
+// This file resolves 404 errors for /@vite/client requests
+// VOTESYS is a PHP application that doesn't use Vite
+
+(function() {
+    'use strict';
+    
+    // Placeholder for Vite client functionality
+    console.log('Vite client placeholder loaded - VOTESYS does not use Vite');
+    
+    // Prevent any errors if something tries to use Vite client methods
+    window.__vite_plugin_react_preamble_installed__ = true;
+    
+    // Mock Vite HMR API if needed
+    if (!window.import || !window.import.meta) {
+        window.import = { meta: { hot: null } };
+    }
+})();

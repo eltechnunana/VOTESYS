@@ -1,0 +1,396 @@
+<?php
+/**
+ * Heritage Christian University Online Voting System
+ * Voter Login Page
+ */
+
+require_once 'config/voter_config.php';
+
+$auth = new VoterAuth();
+$error_message = '';
+$success_message = '';
+
+// Check if already logged in
+if ($auth->isLoggedIn()) {
+    header('Location: voter_page.php');
+    exit();
+}
+
+// Handle login form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $student_id = VoterSecurity::sanitizeInput($_POST['student_id'] ?? '');
+    $password = $_POST['password'] ?? '';
+    
+    if (empty($student_id) || empty($password)) {
+        $error_message = 'Please enter both Student ID and password.';
+    } else {
+        if ($auth->login($student_id, $password)) {
+            header('Location: voter_page.php');
+            exit();
+        } else {
+            $error_message = 'Invalid Student ID or password. Please try again.';
+        }
+    }
+}
+
+// Get error message from URL if redirected
+if (isset($_GET['error'])) {
+    $error_message = VoterSecurity::sanitizeInput($_GET['error']);
+}
+
+if (isset($_GET['success'])) {
+    $success_message = VoterSecurity::sanitizeInput($_GET['success']);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Login - Digital Voting Platform</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="alternate icon" href="assets/images/favicon.svg">
+    
+    <style>
+        :root {
+            --hcu-blue: #4A6B8A;
+            --hcu-gold: #f59e0b;
+            --hcu-light-blue: #5a7b9a;
+            --hcu-dark-blue: #3a5a7a;
+            --hcu-light-gold: #fbbf24;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--hcu-blue) 0%, var(--hcu-dark-blue) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            display: flex;
+        }
+        
+        .login-left {
+            background: linear-gradient(135deg, var(--hcu-blue) 0%, var(--hcu-light-blue) 100%);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .login-right {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .university-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--hcu-dark-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--hcu-dark-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--hcu-blue);
+            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group-text {
+            background: transparent;
+            border: 2px solid #e5e7eb;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: var(--hcu-blue);
+        }
+        
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, var(--hcu-blue) 0%, var(--hcu-light-blue) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 64, 175, 0.3);
+            color: white;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-link a {
+            color: var(--hcu-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link a:hover {
+            color: var(--hcu-light-blue);
+        }
+        
+        .voting-illustration {
+            width: 200px;
+            height: 150px;
+            margin: 2rem 0;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                margin: 1rem;
+                min-height: auto;
+            }
+            
+            .login-left {
+                padding: 2rem;
+            }
+            
+            .login-right {
+                padding: 2rem;
+            }
+            
+            .voting-illustration {
+                width: 150px;
+                height: 112px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Side - Branding -->
+        <div class="login-left">
+            <h1 class="login-title">Digital Voting Platform</h1>
+            <p class="login-subtitle">Online Voting System</p>
+            <img src="assets/images/voting-illustration.svg" alt="Voting" class="voting-illustration">
+            <p>Secure • Transparent • Democratic</p>
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <h2 class="form-title">Voter Login</h2>
+            <p class="form-subtitle">Enter your credentials to access the voting system</p>
+            
+            <?php if (!empty($error_message)): ?>
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <?php echo $error_message; ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($success_message)): ?>
+                <div class="alert alert-success" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <?php echo $success_message; ?>
+                </div>
+            <?php endif; ?>
+            
+            <form method="POST" action="" novalidate>
+                <div class="form-group">
+                    <label for="student_id" class="form-label">
+                        <i class="fas fa-id-card me-2"></i>Student ID
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="student_id" 
+                               name="student_id" 
+                               placeholder="Enter your Student ID"
+                               value="<?php echo isset($_POST['student_id']) ? htmlspecialchars($_POST['student_id']) : ''; ?>"
+                               required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock me-2"></i>Password
+                    </label>
+                    <div class="input-group position-relative">
+                        <span class="input-group-text">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Enter your password"
+                               required>
+                        <button type="button" 
+                                class="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0" 
+                                id="togglePassword" 
+                                style="border: none; background: none; color: var(--hcu-blue); z-index: 10;">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-login">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Login to Vote
+                </button>
+            </form>
+            
+            <div class="back-link">
+                <a href="landing.php">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-focus on student ID field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('student_id').focus();
+            
+            // Toggle password visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (togglePassword && passwordInput && eyeIcon) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle eye icon
+                    if (type === 'text') {
+                        eyeIcon.classList.remove('fa-eye');
+                        eyeIcon.classList.add('fa-eye-slash');
+                    } else {
+                        eyeIcon.classList.remove('fa-eye-slash');
+                        eyeIcon.classList.add('fa-eye');
+                    }
+                });
+            }
+        });
+        
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const studentId = document.getElementById('student_id').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!studentId || !password) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
